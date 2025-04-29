@@ -1,3 +1,5 @@
+import br.com.victall.listenfree.models.Track
+
 data class PlaybackState(
     val isPlaying: Boolean = false,
     val currentTrack: Track? = null,

@@ -1,4 +1,4 @@
-package br.com.victall.listenfree.activitys
+package br.com.victall.listenfree.activities
 
 import android.os.Bundle
 import androidx.activity.enableEdgeToEdge

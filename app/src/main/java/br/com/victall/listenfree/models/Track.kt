@@ -1,3 +1,5 @@
+package br.com.victall.listenfree.models
+
 data class Track(
     val id: String,
     val name: String,

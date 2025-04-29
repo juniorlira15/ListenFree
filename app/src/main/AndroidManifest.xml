@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="com.listenfree">
+    package="br.com.victall.listenfree">
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
@@ -19,29 +19,51 @@
         android:theme="@style/Theme.ListenFree"
         tools:targetApi="31">
         <activity
-            android:name=".activities.CadastroEmailActivity"
-            android:exported="false" />
-        <activity
-            android:name=".activities.LoginActivity"
-            android:exported="false" />
-        <activity
-            android:name=".activities.MainActivity"
-            android:exported="true">
+            android:name=".activities.SplashActivity"
+            android:exported="true"
+            android:theme="@style/Theme.ListenFree.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
         <activity
-            android:name=".activities.AuthActivity"
+            android:theme="@style/Theme.ListenFree.NoActionBar"
+            android:name=".activities.CadastroEmailActivity"
             android:exported="false" />
         <activity
-            android:name=".activities.PlayerActivity"
+            android:name=".activities.LoginActivity"
+            android:theme="@style/Theme.ListenFree.NoActionBar"
             android:exported="false" />
-        <service
-            android:name=".services.PlaybackService"
-            android:exported="false"
-            android:foregroundServiceType="mediaPlayback" />
+        <activity
+            android:name=".activities.MainActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activities.CreatePasswordActivity"
+            android:theme="@style/Theme.ListenFree.NoActionBar"
+            android:exported="false" />
+        <activity
+            android:name=".activities.GenderChoiceActivity"
+            android:theme="@style/Theme.ListenFree.NoActionBar"
+            android:exported="false" />
+        <activity
+            android:name=".activities.NameActivity"
+            android:theme="@style/Theme.ListenFree.NoActionBar"
+            android:exported="false" />
+        <activity
+            android:name=".activities.ArtistPreferredActivity"
+            android:theme="@style/Theme.ListenFree.NoActionBar"
+            android:exported="false" />
+        <activity
+            android:name=".activities.PodcastPreferredActivity"
+            android:theme="@style/Theme.ListenFree.NoActionBar"
+            android:exported="false" />
+        <activity
+            android:name=".activities.PodcastDetailActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activities.EpisodePlayerActivity"
+            android:exported="false" />
     </application>
 
 </manifest>
