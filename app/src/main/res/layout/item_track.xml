@@ -25,7 +25,7 @@
     <com.airbnb.lottie.LottieAnimationView
         android:id="@+id/lottieView"
         android:layout_width="100dp"
-        android:layout_height="30dp"
+        android:layout_height="40dp"
         app:layout_constraintBottom_toBottomOf="@+id/tvTrackTitle"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@+id/tvTrackTitle"

@@ -1,108 +1,146 @@
 package br.com.victall.listenfree.player
 
 import android.content.Context
+import android.content.Intent
 import android.media.MediaPlayer
-import android.widget.Toast
+import android.util.Log
 import br.com.victall.listenfree.models.Track
-import java.lang.ref.WeakReference
+import br.com.victall.listenfree.services.MediaPlaybackService
 
 object PlayerManager {
-    private var audioBufferManager: AudioBufferManager? = null
+    private const val TAG = "PlayerManager"
+    private var mediaPlayer: MediaPlayer? = null
     private var currentTrack: Track? = null
-    private var isPrepared = false
     private var queue: List<Track> = emptyList()
+    private var currentIndex: Int = 0
+    private var isPlaying = false
+
+    private val trackChangeListeners = mutableListOf<(Track) -> Unit>()
+    private val playbackStateListeners = mutableListOf<(Boolean) -> Unit>()
+    private val bufferingListeners = mutableListOf<(Int) -> Unit>()
+
     var onTrackChanged: ((Track) -> Unit)? = null
-    var currentIdexMusca: Int = 0
+    var onPlaybackStateChanged: ((Boolean) -> Unit)? = null
     var onBufferingUpdate: ((Int) -> Unit)? = null
 
-    fun play(context: Context, track: Track, albumTracks: List<Track> = listOf(), onPrepared: (() -> Unit)? = null) {
-        if (track == currentTrack && audioBufferManager?.getMediaPlayer()?.isPlaying == true) return
+    fun addTrackChangeListener(listener: (Track) -> Unit) {
+        trackChangeListeners.add(listener)
+    }
 
-        stop()
-        currentTrack = track
-        queue = albumTracks
-        currentIdexMusca = queue.indexOfFirst { it.id == track.id }
+    fun addPlaybackStateListener(listener: (Boolean) -> Unit) {
+        playbackStateListeners.add(listener)
+    }
 
-        val contextRef = WeakReference(context)
+    fun addBufferingListener(listener: (Int) -> Unit) {
+        bufferingListeners.add(listener)
+    }
 
-        audioBufferManager = AudioBufferManager(
-            onBufferingUpdate = { percent ->
-                onBufferingUpdate?.invoke(percent)
-            },
-            onError = { message ->
-                contextRef.get()?.let { ctx ->
-                    Toast.makeText(ctx, message, Toast.LENGTH_SHORT).show()
-                }
-            },
-            onPrepared = {
-                isPrepared = true
-                audioBufferManager?.getMediaPlayer()?.start()
-                onPrepared?.invoke()
+    fun play(context: Context, track: Track, trackList: List<Track>, onPrepared: (Track) -> Unit = {}) {
+        Log.d(TAG, "Iniciando reprodução: ${track.name}")
 
-                // Configurar completion listener
-                audioBufferManager?.getMediaPlayer()?.setOnCompletionListener {
-                    contextRef.get()?.let { ctx ->
-                        playNext(ctx)
-                    }
-                }
-            }
-        ).also { 
-            it.prepareAsync(track.audioUrl)
+        queue = trackList
+        currentIndex = queue.indexOf(track)
+
+        try {
+            val intent = Intent(context, MediaPlaybackService::class.java)
+            Log.d(TAG, "Iniciando serviço em foreground")
+            context.startForegroundService(intent)
+        } catch (e: Exception) {
+            Log.e(TAG, "Erro ao iniciar serviço: ${e.message}")
         }
+
+        try {
+            mediaPlayer?.release()
+            mediaPlayer = MediaPlayer().apply {
+                setOnPreparedListener {
+                    start()
+                    isPlaying
+                    onPrepared(track)
+                    playbackStateListeners.forEach { it(true) }
+                    onPlaybackStateChanged?.invoke(true)
+                }
+
+                setOnCompletionListener {
+                    playNext(context)
+                }
+
+                setOnBufferingUpdateListener { _, percent ->
+                    bufferingListeners.forEach { it(percent) }
+                    onBufferingUpdate?.invoke(percent)
+                }
+
+                setOnErrorListener { _, what, extra ->
+                    Log.e(TAG, "Erro no MediaPlayer: $what, $extra")
+                    false
+                }
+
+                setDataSource(track.audioUrl)
+                prepareAsync()
+            }
+            currentTrack = track
+            trackChangeListeners.forEach { it(track) }
+            onTrackChanged?.invoke(track)
+        } catch (e: Exception) {
+            Log.e(TAG, "Erro ao preparar mídia: ${e.message}")
+        }
+    }
+
+    fun pause() {
+        Log.d(TAG, "Pausando reprodução")
+        mediaPlayer?.pause()
+        isPlaying = false
+        playbackStateListeners.forEach { it(false) }
+        onPlaybackStateChanged?.invoke(false)
+    }
+
+    fun resume() {
+        Log.d(TAG, "Retomando reprodução")
+        mediaPlayer?.start()
+        isPlaying = true
+        playbackStateListeners.forEach { it(true) }
+        onPlaybackStateChanged?.invoke(true)
     }
 
     fun playNext(context: Context) {
         if (queue.isEmpty()) return
-
-        val nextIndex = currentIdexMusca + 1
-        if (nextIndex < queue.size) {
-            val nextTrack = queue[nextIndex]
-            play(context, nextTrack, queue)
-            onTrackChanged?.invoke(nextTrack)
-        }
+        currentIndex = (currentIndex + 1) % queue.size
+        play(context, queue[currentIndex], queue)
     }
 
     fun playPrevious(context: Context) {
         if (queue.isEmpty()) return
-
-        val previousIndex = currentIdexMusca - 1
-        if (previousIndex >= 0) {
-            val previousTrack = queue[previousIndex]
-            play(context, previousTrack, queue)
-            onTrackChanged?.invoke(previousTrack)
-        }
+        currentIndex = if (currentIndex > 0) currentIndex - 1 else queue.size - 1
+        play(context, queue[currentIndex], queue)
     }
 
     fun seekTo(position: Int) {
-        audioBufferManager?.getMediaPlayer()?.seekTo(position)
+        mediaPlayer?.seekTo(position)
     }
 
-    fun pause() {
-        audioBufferManager?.getMediaPlayer()?.takeIf { it.isPlaying }?.pause()
-    }
-
-    fun resume() {
-        audioBufferManager?.getMediaPlayer()?.takeIf { isPrepared && !it.isPlaying }?.start()
-    }
-
-    fun stop() {
-        audioBufferManager?.release()
-        audioBufferManager = null
-        currentTrack = null
-        isPrepared = false
-        queue = emptyList()
-    }
-
-    fun isPlaying(): Boolean = audioBufferManager?.getMediaPlayer()?.isPlaying == true
+    fun getCurrentPosition(): Int = mediaPlayer?.currentPosition ?: 0
+    fun getDuration(): Int = mediaPlayer?.duration ?: 0
+    fun isPlaying(): Boolean = isPlaying
+    fun getMediaPlayer(): MediaPlayer? = mediaPlayer
     fun getCurrentTrack(): Track? = currentTrack
+    fun getCurrentIndexMusica(): Int = currentIndex
     fun getQueue(): List<Track> = queue
-    fun getMediaPlayer(): MediaPlayer? = audioBufferManager?.getMediaPlayer()
 
-    fun getCurrentPosition(): Int {
-        return audioBufferManager?.getMediaPlayer()?.currentPosition ?: 0
+    fun setQueue(tracks: List<Track>) {
+        queue = tracks
     }
 
-    fun getCurrentIndexMusica(): Int {
-        return currentIdexMusca
+    fun release() {
+        mediaPlayer?.release()
+        mediaPlayer = null
+        currentTrack = null
+        queue = emptyList()
+        currentIndex = 0
+        isPlaying = false
+        trackChangeListeners.clear()
+        playbackStateListeners.clear()
+        bufferingListeners.clear()
+        onTrackChanged = null
+        onPlaybackStateChanged = null
+        onBufferingUpdate = null
     }
 }
