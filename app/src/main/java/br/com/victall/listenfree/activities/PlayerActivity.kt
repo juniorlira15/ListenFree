@@ -99,6 +99,7 @@ class PlayerActivity : AppCompatActivity() {
                 bindTrack(track)
                 trackAdapter.setHighlightTrack(track.id)
                 updatePlayPauseIcon()
+                MainActivity.instance.updateMiniPlayer(track)
             }
         }
     }

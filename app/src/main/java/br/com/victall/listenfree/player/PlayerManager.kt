@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.media.MediaPlayer
 import android.util.Log
+import br.com.victall.listenfree.activities.MainActivity
 import br.com.victall.listenfree.models.Track
 import br.com.victall.listenfree.services.MediaPlaybackService
 
@@ -37,6 +38,8 @@ object PlayerManager {
 
     fun play(context: Context, track: Track, trackList: List<Track>, onPrepared: (Track) -> Unit = {}) {
         Log.d(TAG, "Iniciando reprodução: ${track.name}")
+
+        MainActivity.instance.updateMiniPlayer(track)
 
         queue = trackList
         currentIndex = queue.indexOf(track)

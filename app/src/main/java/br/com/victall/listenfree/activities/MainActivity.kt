@@ -7,6 +7,7 @@ import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
+import android.view.View
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
@@ -17,6 +18,7 @@ import br.com.victall.listenfree.fragments.HomeFragment
 import br.com.victall.listenfree.fragments.SearchFragment
 import br.com.victall.listenfree.fragments.LibraryFragment
 import br.com.victall.listenfree.models.Track
+import br.com.victall.listenfree.player.PlayerManager
 import br.com.victall.listenfree.ui.MiniPlayerController
 import com.google.firebase.FirebaseApp
 
@@ -42,30 +44,30 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        Log.d(TAG, "onCreate iniciado")
-        
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        Log.d(TAG, "Layout inflado")
-
         FirebaseApp.initializeApp(this)
-        Log.d(TAG, "Firebase inicializado")
-
         instance = this
-
         miniPlayerController = MiniPlayerController(binding.miniPlayer) {
             startActivity(Intent(this, PlayerActivity::class.java))
         }
 
-        // Solicita permissão de notificação se necessário
         requestNotificationPermission()
-
         setupBottomNavigation()
-        Log.d(TAG, "Abrindo HomeFragment")
         openFragment(HomeFragment())
     }
 
+    override fun onResume() {
+        super.onResume()
+        PlayerManager.getCurrentTrack()?.let { track ->
+            if (PlayerManager.isPlaying()) {
+                updateMiniPlayer(track)
+            }
+        }
+    }
+
     fun updateMiniPlayer(track: Track) {
+        binding.miniPlayer.root.visibility = View.VISIBLE
         miniPlayerController.bind(track)
     }
 
@@ -130,10 +132,15 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun openFragment(fragment: Fragment) {
-        Log.d(TAG, "Abrindo fragment: ${fragment.javaClass.simpleName}")
+
         supportFragmentManager.beginTransaction()
             .replace(R.id.fragment_container, fragment)
             .commit()
-        Log.d(TAG, "Fragment transaction commitado")
+
+        PlayerManager.getCurrentTrack()?.let { track ->
+            if (PlayerManager.isPlaying()) {
+                updateMiniPlayer(track)
+            }
+        }
     }
 }

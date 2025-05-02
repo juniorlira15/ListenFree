@@ -36,8 +36,8 @@ class MiniPlayerController(
 
     fun bind(track: Track) {
         tvTitle.text = track.name
-        tvArtist.text = "Artista desconhecido"
-        Glide.with(binding.root.context).load(R.drawable.ic_music_note).into(ivCover)
+        tvArtist.text = track.artistName
+        Glide.with(binding.root.context).load(track.coverUrl).into(ivCover)
         progressBar.progress = 0
         progressBar.max = track.duration
         updatePlayPauseIcon()
