@@ -1,0 +1,30 @@
+{
+  "project_info": {
+    "project_number": "684311119826",
+    "firebase_url": "https://listenfree-60bf7-default-rtdb.firebaseio.com",
+    "project_id": "listenfree-60bf7",
+    "storage_bucket": "listenfree-60bf7.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:684311119826:android:96e132e326974da77b2a0b",
+        "android_client_info": {
+          "package_name": "br.com.victall.listenfree"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDY4O5mmOcO4A7CwKTNjasWfcJBGBIsm-I"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

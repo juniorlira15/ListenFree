@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="?attr/selectableItemBackground"
+    android:padding="12dp">
+
+    <ImageView
+        android:id="@+id/ivEpisodeCover"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:contentDescription="Capa do episódio"
+        android:scaleType="centerCrop"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:src="@tools:sample/backgrounds/scenic" />
+
+    <TextView
+        android:id="@+id/tvEpisodeTitle"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="12dp"
+        android:layout_marginEnd="8dp"
+        android:ellipsize="end"
+        android:maxLines="2"
+        android:textColor="@color/white"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toStartOf="@+id/btnDownload"
+        app:layout_constraintStart_toEndOf="@+id/ivEpisodeCover"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="Título do episódio" />
+
+    <TextView
+        android:id="@+id/tvEpisodeDuration"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="12dp"
+        android:layout_marginTop="4dp"
+        android:textColor="@color/gray_light"
+        android:textSize="14sp"
+        app:layout_constraintStart_toEndOf="@+id/ivEpisodeCover"
+        app:layout_constraintTop_toBottomOf="@+id/tvEpisodeTitle"
+        tools:text="45:30" />
+
+    <ProgressBar
+        android:id="@+id/progressBar"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_width="0dp"
+        android:layout_height="4dp"
+        android:layout_marginStart="12dp"
+        android:layout_marginTop="8dp"
+        android:progressTint="@color/spotify_green"
+        android:visibility="gone"
+        app:layout_constraintEnd_toStartOf="@+id/tvProgress"
+        app:layout_constraintStart_toEndOf="@+id/ivEpisodeCover"
+        app:layout_constraintTop_toBottomOf="@+id/tvEpisodeDuration"
+        tools:progress="75"
+        tools:visibility="visible" />
+
+    <TextView
+        android:id="@+id/tvProgress"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:textColor="@color/spotify_green"
+        android:textSize="12sp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="@+id/progressBar"
+        app:layout_constraintEnd_toStartOf="@+id/btnDownload"
+        app:layout_constraintStart_toEndOf="@+id/progressBar"
+        app:layout_constraintTop_toTopOf="@+id/progressBar"
+        tools:text="75%"
+        tools:visibility="visible" />
+
+    <ImageButton
+        android:id="@+id/btnDownload"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:contentDescription="Baixar episódio"
+        android:padding="12dp"
+        android:src="@android:drawable/stat_sys_download"
+        android:tint="@color/white"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout> 

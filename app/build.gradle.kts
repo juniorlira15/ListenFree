@@ -1,7 +1,9 @@
 plugins {
     id("com.android.application")
+    id("com.google.gms.google-services")
     id("org.jetbrains.kotlin.android")
     id("kotlin-kapt")
+
 }
 
 android {
@@ -57,6 +59,8 @@ dependencies {
     
     // Glide para carregamento de imagens
     implementation("com.github.bumptech.glide:glide:4.16.0")
+    implementation(libs.firebase.database.ktx)
+    implementation(libs.androidx.activity)
     kapt("com.github.bumptech.glide:compiler:4.16.0")
     
     // Retrofit para chamadas de API
@@ -73,4 +77,10 @@ dependencies {
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
+
+    implementation(platform("com.google.firebase:firebase-bom:33.13.0"))
+    implementation("com.google.firebase:firebase-analytics")
+
+    //lottiefiles
+    implementation(libs.lottie)
 }
