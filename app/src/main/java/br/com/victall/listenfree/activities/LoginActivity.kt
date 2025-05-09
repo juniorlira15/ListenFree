@@ -9,6 +9,8 @@ import androidx.core.view.WindowInsetsCompat
 import br.com.victall.listenfree.databinding.ActivityLoginBinding
 
 class LoginActivity : AppCompatActivity() {
+
+
     private lateinit var binding: ActivityLoginBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -21,7 +23,12 @@ class LoginActivity : AppCompatActivity() {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
-        
+
+        binding.btnSignIn.setOnClickListener(){
+            val intent = Intent(this, CadastroEmailActivity::class.java)
+            startActivity(intent)
+        }
+
         setupViews()
     }
     

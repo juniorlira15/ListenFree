@@ -79,4 +79,5 @@ class NameActivity : AppCompatActivity() {
         }
         startActivity(intent)
     }
+
 } 

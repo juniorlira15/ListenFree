@@ -116,9 +116,9 @@ class HomeFragment : Fragment() {
                                 isDownloaded = false,
                             )
 
-//                            if(duration == 0){
-//                                recuperarDuracaoSeZero(track)
-//                            }
+                            //if(duration == 0){
+                                //recuperarDuracaoSeZero(track)
+                            //}
 
                             tracks.add(track)
                             Log.d(TAG, "Música carregada - ID: $trackId, Título: $titulo")
