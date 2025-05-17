@@ -1,4 +1,4 @@
-package br.com.victall.listenfree.services
+package br.com.victall.listenfree.core.services
 
 import android.app.NotificationChannel
 import android.app.NotificationManager

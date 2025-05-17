@@ -6,7 +6,7 @@ import android.media.MediaPlayer
 import android.util.Log
 import br.com.victall.listenfree.activities.MainActivity
 import br.com.victall.listenfree.models.Track
-import br.com.victall.listenfree.services.MediaPlaybackService
+import br.com.victall.listenfree.core.services.MediaPlaybackService
 
 object PlayerManager {
     private const val TAG = "PlayerManager"

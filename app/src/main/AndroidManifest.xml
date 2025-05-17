@@ -10,6 +10,10 @@
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="android.permission.VIBRATE" />
+    <uses-permission
+        android:name="android.permission.READ_EXTERNAL_STORAGE"
+        android:maxSdkVersion="32" />
+    <uses-permission android:name="android.permission.READ_MEDIA_AUDIO" />
 
     <application
         android:allowBackup="true"
@@ -22,9 +26,15 @@
         android:theme="@style/Theme.ListenFree"
         tools:targetApi="31">
         <activity
-            android:name=".activities.PlayerActivity"
-            android:theme="@style/Theme.ListenFree.NoActionBar"
+            android:name=".activities.TrackUploadActivity"
             android:exported="false" />
+        <activity
+            android:name=".activities.AlbumCreateActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activities.PlayerActivity"
+            android:exported="false"
+            android:theme="@style/Theme.ListenFree.NoActionBar" />
         <activity
             android:name=".activities.SplashActivity"
             android:exported="true"
@@ -45,8 +55,8 @@
             android:theme="@style/Theme.ListenFree.NoActionBar" />
         <activity
             android:name=".activities.MainActivity"
-            android:theme="@style/Theme.ListenFree.NoActionBar"
-            android:exported="false" />
+            android:exported="false"
+            android:theme="@style/Theme.ListenFree.NoActionBar" />
         <activity
             android:name=".activities.CreatePasswordActivity"
             android:exported="false"
@@ -69,14 +79,23 @@
             android:theme="@style/Theme.ListenFree.NoActionBar" />
         <activity
             android:name=".activities.PodcastDetailActivity"
-            android:theme="@style/Theme.ListenFree.NoActionBar"
-            android:exported="false" />
+            android:exported="false"
+            android:theme="@style/Theme.ListenFree.NoActionBar" />
         <activity
             android:name=".activities.EpisodePlayerActivity"
-            android:theme="@style/Theme.ListenFree.NoActionBar"
-            android:exported="false" />
+            android:exported="false"
+            android:theme="@style/Theme.ListenFree.NoActionBar" />
+        <activity
+            android:name=".upload.UploadActivity"
+            android:exported="false"
+            android:theme="@style/Theme.ListenFree.NoActionBar" />
+        <activity
+            android:name=".github.GitHubRepositoryActivity"
+            android:exported="false"
+            android:theme="@style/Theme.ListenFree.Spotify" />
+
         <service
-            android:name=".services.MediaPlaybackService"
+            android:name=".core.services.MediaPlaybackService"
             android:enabled="true"
             android:exported="false"
             android:foregroundServiceType="mediaPlayback">

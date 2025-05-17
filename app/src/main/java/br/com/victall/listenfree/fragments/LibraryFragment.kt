@@ -1,11 +1,13 @@
 package br.com.victall.listenfree.fragments
 
+import android.content.Intent
 import android.os.Bundle
+import android.view.*
+import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
 import br.com.victall.listenfree.R
+import br.com.victall.listenfree.databinding.FragmentLibraryBinding
+import br.com.victall.listenfree.github.GitHubRepositoryActivity
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -18,12 +20,16 @@ private const val ARG_PARAM2 = "param2"
  * create an instance of this fragment.
  */
 class LibraryFragment : Fragment() {
+    private var _binding: FragmentLibraryBinding? = null
+    private val binding get() = _binding!!
+
     // TODO: Rename and change types of parameters
     private var param1: String? = null
     private var param2: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        setHasOptionsMenu(true)
         arguments?.let {
             param1 = it.getString(ARG_PARAM1)
             param2 = it.getString(ARG_PARAM2)
@@ -34,8 +40,44 @@ class LibraryFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_library, container, false)
+        _binding = FragmentLibraryBinding.inflate(inflater, container, false)
+        return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        setupToolbar()
+        setupClickListeners()
+    }
+
+    private fun setupToolbar() {
+        binding.toolbar.apply {
+            setOnMenuItemClickListener { menuItem ->
+                when (menuItem.itemId) {
+                    R.id.action_github -> {
+                        navigateToGitHub()
+                        true
+                    }
+                    else -> false
+                }
+            }
+        }
+    }
+
+    private fun setupClickListeners() {
+        binding.btnManageRepository.setOnClickListener {
+            navigateToGitHub()
+        }
+    }
+
+    private fun navigateToGitHub() {
+        val intent = Intent(requireContext(), GitHubRepositoryActivity::class.java)
+        startActivity(intent)
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 
     companion object {

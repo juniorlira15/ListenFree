@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="24dp"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/tvTituloAlbum"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Álbum: --"
+        android:textStyle="bold" />
+
+    <Button
+        android:id="@+id/btnSelecionarMusicas"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Selecionar Músicas"
+        android:layout_marginTop="20dp" />
+
+    <ProgressBar
+        android:id="@+id/progressoUpload"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:visibility="gone" />
+
+    <Button
+        android:id="@+id/btnVoltarRepos"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Voltar para repositórios"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="8dp"
+        android:textColor="@android:color/white"
+        android:layout_gravity="center" />
+
+
+    <TextView
+        android:id="@+id/tvStatus"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text=""
+        android:layout_marginTop="8dp" />
+</LinearLayout>

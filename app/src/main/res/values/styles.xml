@@ -9,4 +9,28 @@
         <item name="cornerFamily">rounded</item>
         <item name="cornerSize">8dp</item>
     </style>
+
+    <style name="Theme.ListenFree.Spotify" parent="Theme.Material3.DayNight.NoActionBar">
+        <item name="colorPrimary">@color/primary</item>
+        <item name="colorPrimaryVariant">@color/primary_dark</item>
+        <item name="colorOnPrimary">@color/white</item>
+        <item name="colorSecondary">@color/secondary</item>
+        <item name="colorOnSecondary">@color/white</item>
+        <item name="android:colorBackground">@color/background</item>
+        <item name="colorSurface">@color/card_background</item>
+        <item name="colorOnSurface">@color/white</item>
+        <item name="android:textColorPrimary">@color/white</item>
+        <item name="android:windowBackground">@color/background</item>
+        <item name="android:buttonStyle">@style/Widget.Material3.Button</item>
+        <item name="android:editTextBackground">@color/card_background</item>
+        <item name="android:editTextColor">@color/white</item>
+        <item name="android:dialogTheme">@style/ThemeOverlay.ListenFree.Spotify.Dialog</item>
+    </style>
+
+    <style name="ThemeOverlay.ListenFree.Spotify.Dialog" parent="Theme.ListenFree.Spotify">
+        <item name="colorSurface">@color/card_background</item>
+        <item name="colorOnSurface">@color/white</item>
+        <item name="android:background">@color/card_background</item>
+        <item name="android:textColorPrimary">@color/white</item>
+    </style>
 </resources> 

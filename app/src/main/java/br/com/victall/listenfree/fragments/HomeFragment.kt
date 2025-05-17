@@ -61,98 +61,100 @@ class HomeFragment : Fragment() {
             adapter = albumAdapter
         }
 
-        if (AlbumCache.albumList != null) {
-            Log.d(TAG, "Carregando álbuns do cache")
-            albumAdapter.updateList(AlbumCache.albumList!!)
-            return
-        }
+        val database = FirebaseDatabase.getInstance()
+        dbRef = database.getReference("albuns")
+        val musicasRef = database.getReference("musicas")
 
-        try {
-            val database = FirebaseDatabase.getInstance()
-            database.setPersistenceEnabled(true)
-            database.goOnline()
-            dbRef = database.getReference("albuns")
+        dbRef?.addListenerForSingleValueEvent(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                val albuns = mutableListOf<Album>()
+                val musicasPorAlbum = mutableMapOf<String, MutableList<Track>>()
 
-            database.reference.child(".info/connected").addValueEventListener(object : ValueEventListener {
-                override fun onDataChange(snapshot: DataSnapshot) {
-                    val connected = snapshot.getValue(Boolean::class.java) ?: false
-                    Log.d(TAG, "Firebase conectado: $connected")
-                }
-
-                override fun onCancelled(error: DatabaseError) {
-                    Log.e(TAG, "Erro ao verificar conexão: ${error.message}")
-                }
-            })
-
-            valueEventListener = object : ValueEventListener {
-                override fun onDataChange(snapshot: DataSnapshot) {
-                    Log.d(TAG, "onDataChange chamado. Existe snapshot: ${snapshot.exists()}")
-                    Log.d(TAG, "Número de álbuns: ${snapshot.childrenCount}")
-
-                    val albuns = mutableListOf<Album>()
-                    for (albumSnapshot in snapshot.children) {
-                        val id = albumSnapshot.key ?: continue
-                        val name = albumSnapshot.child("titulo").getValue(String::class.java) ?: ""
-                        val artist = albumSnapshot.child("artista").getValue(String::class.java) ?: ""
-                        val imageUrl = albumSnapshot.child("capaUrl").getValue(String::class.java) ?: ""
-                        val releaseYear = albumSnapshot.child("ano").getValue(Int::class.java) ?: 0
-
-                        val tracks = mutableListOf<Track>()
-                        val tracksSnapshot = albumSnapshot.child("musicas")
-                        for (trackSnapshot in tracksSnapshot.children) {
-                            val trackId = trackSnapshot.key ?: continue
-                            val titulo = trackSnapshot.child("titulo").getValue(String::class.java) ?: ""
-                            val url = trackSnapshot.child("arquivoUrl").getValue(String::class.java) ?: ""
-                            val duration = trackSnapshot.child("duracao").getValue(Int::class.java) ?: 0
-
-                            val track = Track(
-                                id = trackId,
-                                name = titulo,
-                                audioUrl = url,
-                                duration = duration,
-                                coverUrl = imageUrl,
-                                albumId = id,
-                                artistName = artist,
-                                isDownloaded = false,
-                            )
-
-                            //if(duration == 0){
-                                //recuperarDuracaoSeZero(track)
-                            //}
-
-                            tracks.add(track)
-                            Log.d(TAG, "Música carregada - ID: $trackId, Título: $titulo")
+                // Primeiro: agrupar músicas do nó separado por albumId
+                musicasRef.addListenerForSingleValueEvent(object : ValueEventListener {
+                    override fun onDataChange(musicasSnapshot: DataSnapshot) {
+                        for (musicaSnapshot in musicasSnapshot.children) {
+                            val track = musicaSnapshot.getValue(Track::class.java)
+                            if (track != null && track.albumId.isNotBlank()) {
+                                musicasPorAlbum.getOrPut(track.albumId) { mutableListOf() }.add(track)
+                            }
                         }
 
-                        val album = Album(
-                            id = id,
-                            titulo = name,
-                            artist = artist,
-                            imageUrl = imageUrl,
-                            releaseYear = releaseYear,
-                            tracks = tracks
-                        )
-                        albuns.add(album)
+                        // Agora processar os álbuns
+                        for (albumSnapshot in snapshot.children) {
+                            val id = albumSnapshot.key ?: continue
+                            val titulo = albumSnapshot.child("titulo").getValue(String::class.java) ?: ""
+                            val artista = albumSnapshot.child("artista").getValue(String::class.java)
+                                ?: albumSnapshot.child("artist").getValue(String::class.java) ?: ""
+                            val capaUrl = albumSnapshot.child("capaUrl").getValue(String::class.java)
+                                ?: albumSnapshot.child("imageUrl").getValue(String::class.java) ?: ""
+                            val ano = albumSnapshot.child("ano").getValue(Int::class.java)
+                                ?: albumSnapshot.child("releaseYear").getValue(Int::class.java) ?: 0
+
+                            val tracks = mutableListOf<Track>()
+
+                            // Caso 1: músicas embutidas
+                            val musicasSnapshot = albumSnapshot.child("musicas")
+                            if (musicasSnapshot.exists()) {
+                                for (trackSnapshot in musicasSnapshot.children) {
+                                    val trackId = trackSnapshot.key ?: continue
+                                    val nome = trackSnapshot.child("titulo").getValue(String::class.java) ?: ""
+                                    val url = trackSnapshot.child("arquivoUrl").getValue(String::class.java) ?: ""
+                                    val duracao = trackSnapshot.child("duracao").getValue(Int::class.java) ?: 0
+
+                                    val track = Track(
+                                        id = trackId,
+                                        name = nome,
+                                        audioUrl = url,
+                                        duration = duracao,
+                                        coverUrl = capaUrl,
+                                        albumId = id,
+                                        artistName = artista,
+                                        isDownloaded = false
+                                    )
+                                    tracks.add(track)
+                                }
+                            }
+
+                            // Caso 2: músicas externas (estrutura nova)
+                            if (tracks.isEmpty()) {
+                                val musicasExternas = musicasPorAlbum[id]
+                                if (musicasExternas != null) {
+                                    tracks.addAll(musicasExternas.map {
+                                        it.copy(coverUrl = capaUrl)
+                                    })
+                                }
+                            }
+
+                            if (tracks.isNotEmpty()) {
+                                albuns.add(
+                                    Album(
+                                        id = id,
+                                        titulo = titulo,
+                                        artist = artista,
+                                        imageUrl = capaUrl,
+                                        releaseYear = ano,
+                                        tracks = tracks
+                                    )
+                                )
+                            }
+                        }
+
+                        AlbumCache.albumList = albuns
+                        albumAdapter.updateList(albuns)
                     }
 
-                    Log.d(TAG, "Total de álbuns processados: ${albuns.size}")
-                    AlbumCache.albumList = albuns
-                    albumAdapter.updateList(albuns)
-                }
-
-                override fun onCancelled(error: DatabaseError) {
-                    Log.e(TAG, "Erro ao carregar álbuns: ${error.message}")
-                }
+                    override fun onCancelled(error: DatabaseError) {
+                        Log.e(TAG, "Erro ao carregar músicas externas: ${error.message}")
+                    }
+                })
             }
 
-            dbRef?.addValueEventListener(valueEventListener!!)
-
-        } catch (e: Exception) {
-            Log.e(TAG, "Erro ao acessar Firebase Database: ${e.message}")
-            e.printStackTrace()
-        }
+            override fun onCancelled(error: DatabaseError) {
+                Log.e(TAG, "Erro ao carregar álbuns: ${error.message}")
+            }
+        })
     }
-
 
     fun recuperarDuracaoSeZero(track: Track) {
         if (track.duration > 0) return

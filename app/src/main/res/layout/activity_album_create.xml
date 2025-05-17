@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="24dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <EditText
+            android:id="@+id/etTitulo"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Título do álbum" />
+
+        <EditText
+            android:id="@+id/etArtista"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Nome do artista"
+            android:layout_marginTop="12dp" />
+
+        <EditText
+            android:id="@+id/etGenero"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Gênero musical"
+            android:layout_marginTop="12dp" />
+
+        <EditText
+            android:id="@+id/etAno"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Ano de lançamento"
+            android:inputType="number"
+            android:layout_marginTop="12dp" />
+
+        <EditText
+            android:id="@+id/etCapa"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="URL da imagem de capa"
+            android:layout_marginTop="12dp" />
+        <Button
+            android:id="@+id/btnSelecionarCapa"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Selecionar Capa"
+            android:layout_marginTop="20dp" />
+
+        <ImageView
+            android:id="@+id/ivPreviewCapa"
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            android:scaleType="centerCrop"
+            android:layout_marginTop="12dp"
+            android:background="@android:color/darker_gray" />
+
+
+        <Button
+            android:id="@+id/btnCriarAlbum"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Criar álbum"
+            android:layout_marginTop="20dp" />
+    </LinearLayout>
+</ScrollView>

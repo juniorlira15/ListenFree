@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="spotify_green">#1DB954</color>
+    <color name="spotify_green_light">#1ED760</color>
+    <color name="primary">#1DB954</color>
+    <color name="primary_dark">#1AA34A</color>
+    <color name="secondary">#191414</color>
     <color name="spotify_green_dark">#1AA34A</color>
     <color name="background_dark">#121212</color>
     <color name="black">#FF000000</color>
@@ -8,4 +12,9 @@
     <color name="gray_light">#B3B3B3</color>
     <color name="gray_dark">#282828</color>
     <color name="surface_dark">#181818</color>
+    
+    <!-- Novas cores -->
+    <color name="background">@color/background_dark</color>
+    <color name="card_background">@color/surface_dark</color>
+    <color name="ripple">#33FFFFFF</color>
 </resources>
