@@ -26,6 +26,10 @@
         android:theme="@style/Theme.ListenFree"
         tools:targetApi="31">
         <activity
+            android:name=".activities.MainActivityTeste"
+            android:exported="false"
+            android:label="@string/title_activity_main_teste" />
+        <activity
             android:name=".activities.TrackUploadActivity"
             android:exported="false" />
         <activity
