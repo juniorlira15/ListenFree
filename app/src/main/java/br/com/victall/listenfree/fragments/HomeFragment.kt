@@ -57,7 +57,7 @@ class HomeFragment : Fragment() {
         }
 
         binding.rvAlbuns.apply {
-            layoutManager = GridLayoutManager(requireContext(), 3)
+            layoutManager = GridLayoutManager(requireContext(), 1)
             adapter = albumAdapter
         }
 

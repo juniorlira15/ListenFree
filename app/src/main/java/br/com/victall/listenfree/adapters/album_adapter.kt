@@ -29,6 +29,8 @@ class AlbumAdapter(
         
         holder.binding.apply {
             tvAlbumTitle.text = album.titulo
+            tvArtistTitle.text = album.artist
+
             
             // Carrega a imagem com placeholder e tratamento de erro
             Glide.with(ivAlbumCover.context)

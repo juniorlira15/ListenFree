@@ -34,6 +34,7 @@
         android:id="@+id/rvAlbuns"
         android:layout_width="match_parent"
         android:layout_height="0dp"
+        android:orientation="vertical"
         tools:listitem="@layout/item_album"
         android:contentDescription="Lista de albuns em detaque"
         android:layout_weight="1"
